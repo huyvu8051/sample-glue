@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<project name="GlueSample" default="Copy_WAR">
+    <property file="build.properties"/>
+    <target name="Copy_WAR" depends="war" description="copy">
+        <copy todir="${target.WebContent.dir}">
+            <fileset dir="${build.dir}">
+                <include name="*.war"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="war" description="Creates the WAR file" depends="clean">
+        <mkdir dir="${build.dir}"/>
+        <manifest file="${build.dir}/MANIFEST.MF">
+            <section name="POSCO ICT Glue Sample Project">
+                <attribute name="Implementation-Version" value="${project_version}"/>
+            </section>
+        </manifest>
+        <war destfile="${build.dir}/${WEB_NAME}.war"
+            webxml="${WebContent.dir}/WEB-INF/web.xml"
+            manifest="${build.dir}/MANIFEST.MF">
+            <fileset dir="${WebContent.dir}">
+                <patternset>
+                    <include name="**/*.jsp"/>
+                </patternset>
+            </fileset>
+            <webinf dir="${WebContent.dir}/WEB-INF/" >
+                <patternset>
+                    <include name="*.*"/>
+                </patternset>
+            </webinf>
+            <classes dir="${class.dir}">
+                <patternset>
+                    <include name="**/*.*"/>
+                    <exclude name="layout/*.xsd"/>
+                </patternset>
+            </classes>
+            <lib dir="${GlueSDK.dir}/lib/gluelib">
+                <include name="glue-schema*.jar"/>
+                <include name="glue-core*.jar" />
+                <include name="license*.jar"/>
+            </lib>
+            <lib dir="${GlueSDK.dir}/lib/gluestd">
+                <include name="bcprov*.jar"/>
+                <include name="xmlbeans*.jar"/>
+                <include name="jaxp-api*.jar"/>
+                <include name="spring*.jar"/>
+                <include name="ehcache*.jar"/>
+                <include name="slf4j*.jar"/>
+                <include name="logback*.jar"/>
+                <include name="jcl*.jar"/>
+                <include name="commons*.jar"/>
+                <include name="sqlite*.jar"/>
+            </lib>
+        </war>
+    </target>
+	<target name="clean">
+		<delete failonerror="false">
+			<fileset dir="${build.dir}">
+				<include name="*.*" />
+			</fileset>
+			<fileset dir="${target.WebContent.dir}">
+				<include name="${WEB_NAME}.war" />
+				<include name="${WEB_NAME}.war.deployed" />
+			</fileset>
+		</delete>
+		<delete dir="${target.WebContent.dir}/${WEB_NAME}" failonerror="false" />
+	</target>	
+</project>
